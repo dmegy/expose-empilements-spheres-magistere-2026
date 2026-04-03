@@ -1,0 +1,26 @@
+\documentclass[tikz,border=5mm]{standalone}
+\usepackage{tikz}
+
+\begin{document}
+\newcommand{\lattice}[3]{
+    \pgfmathsetmacro\dy{sqrt(3)}
+    \foreach \j in {1,...,#1} {
+        \foreach \i in {1,...,#2} {
+            \pgfmathsetmacro\x{2*\i + mod(\j,2)}
+            \pgfmathsetmacro\y{\dy*\j}
+            \draw[fill=#3] (\x,\y) circle (1);
+        }
+    }
+}
+\begin{tikzpicture}[scale=2]
+\lattice{4}{7}{gray!20}
+\begin{scope}[shift={(1,1/sqrt(3))}]
+\lattice{3}{5}{gray!50}
+\end{scope}
+\begin{scope}[shift={(3,{sqrt(3)})}]
+\lattice{2}{3}{white}
+\end{scope}
+\end{tikzpicture}
+
+
+\end{document}

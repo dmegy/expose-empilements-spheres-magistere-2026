@@ -1,0 +1,14 @@
+\documentclass[tikz]{standalone}
+\usepackage{luacode}
+\begin{document}
+\begin{tikzpicture}
+\begin{luacode*}
+local nbLines = 10
+for j=0,nbLines-1 do
+	for i=-j,nbLines-1 do
+		tex.print(string.format("\\draw [thick,fill=teal!20](%f,%f) circle (1);", 2*i+j, j*math.sqrt(3)))
+	end
+end
+\end{luacode*}
+\end{tikzpicture}
+\end{document}
