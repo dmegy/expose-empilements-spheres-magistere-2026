@@ -1,0 +1,40 @@
+\documentclass[margin=.2cm,multi,tikz]{standalone}
+\usepackage{luahyperbolic} % https://ctan.org/pkg/luahyperbolic
+
+\begin{document}
+\begin{luacode*}
+local function drawConcentricCircles(point,N)
+	for k=1,N do
+		hyper.drawCircle(point,k,"red")
+	end
+	hyper.drawPoint(point, "black")
+end
+
+hyper.tikzBegin()
+drawConcentricCircles(complex.ZERO, 4)
+hyper.tikzEnd()
+
+hyper.tikzBegin()
+drawConcentricCircles(complex(1/2,1/2), 4)
+hyper.tikzEnd()
+
+hyper.tikzBegin()
+drawConcentricCircles(complex(2/3,2/3), 4)
+hyper.tikzEnd()
+
+-- dernière image :plusieurs cercles de rayon 1 
+
+local points = {
+	complex(0,0),
+	complex(-0.5,-0.4),
+	complex(0.8,0.1),
+	complex(0,0.9)
+}
+hyper.tikzBegin()
+for _,point in ipairs(points) do
+	hyper.drawCircle(point,1,"red")
+	hyper.drawPoint(point, "black")
+end
+hyper.tikzEnd()
+\end{luacode*}
+\end{document}

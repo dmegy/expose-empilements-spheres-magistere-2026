@@ -1,0 +1,33 @@
+% à compiler avec lualatex, pas pdflatex
+% ceci produit un pdf avec une image par page (option "multi" de standalone)
+% ensuite, transformer en png séparés avec : 
+% pdftocairo -png -r 150 file.pdf frame
+% ou alors séparer mais au format pdf:
+% pdfseparate file.pdf frame-%d.pdf
+% ces deux outils nécessitent poppler
+\documentclass[tikz, multi]{standalone}
+\usepackage{luacode}
+\begin{document}
+\begin{luacode*}
+local p,q = 20,10 -- images de taille p x q
+
+for angle=90,60,-10 do
+	-- deuxième vecteur de la base du réseau : 
+	local vector = {math.cos(angle*math.pi/180), math.sin(angle*math.pi/180)}
+	tex.print("\\begin{tikzpicture}")
+	tex.print(string.format("\\clip (%f, %f) rectangle (%f, %f);", 0,0,p,q))
+	for j=0,(q-1)*2 do
+		for i=-j,p do
+			local options = ""
+			if i == math.floor(p/2) and j == 1 then
+				options = "fill=black"
+			else
+				options = "thick, fill=teal!20"
+			end
+			tex.print(string.format("\\draw [%s](%f,%f) circle (1/2);", options, i+j*vector[1], j*vector[2]))
+		end
+	end
+	tex.print("\\end{tikzpicture}")
+end
+\end{luacode*}
+\end{document}

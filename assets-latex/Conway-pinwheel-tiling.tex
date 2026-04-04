@@ -1,0 +1,29 @@
+\documentclass[tikz]{standalone}
+\newcommand{\s}{1/sqrt(5)}
+\renewcommand{\triangle}[1]{
+  \pgfmathparse{int(#1)}
+  \ifnum\pgfmathresult>0
+  	\begin{scope}[shift={(1,2)}, rotate=atan(-1/2), scale=\s]
+      \triangle{#1-1}
+    \end{scope}
+    \begin{scope}[shift={(6,2)}, rotate=atan(-1/2)+180, scale=\s]
+      \triangle{#1-1}
+    \end{scope}
+    \begin{scope}[shift={(1,2)}, rotate=atan(-1/2), xscale=\s, yscale=-\s,]
+      \triangle{#1-1}
+    \end{scope}
+    \begin{scope}[shift={(6,2)}, rotate=atan(-1/2), xscale=\s, yscale=-\s,]
+      \triangle{#1-1}
+    \end{scope}
+    \begin{scope}[shift={(2,4)}, rotate=atan(2), xscale=-\s, yscale=\s,]
+      \triangle{#1-1}
+    \end{scope}
+  \else
+    \pgfmathparse{rnd}
+    \definecolor{newColor}{rgb}{0,\pgfmathresult,\pgfmathresult}
+    \fill[newColor] (0,0) -- (0,5) -- (10,0)  -- cycle;
+  \fi
+}
+\begin{document}
+\tikz{\triangle{5}}
+\end{document}
