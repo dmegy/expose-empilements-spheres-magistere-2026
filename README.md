@@ -1,5 +1,7 @@
 # Exposé Empilements de sphères (2026-04-02, Séminaire du magistère de mathématiques de Nancy)
 
+![Empilement pyramidal](assets-latex/pyramidal-sphere-packing.png)
+
 Ce repo contient:
 
 - les slides en pdf (expose-2026-04-02.pdf), 
