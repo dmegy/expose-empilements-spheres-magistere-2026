@@ -1,0 +1,87 @@
+\documentclass[margin=.5cm]{standalone}
+\usepackage{tikz}
+\usepackage{luacode}
+\begin{luacode*}
+local RADIUS = 1 -- rayon des sphères
+local WORLD_DOWN = {0,0,-1}
+local points = {} -- coordonnées des centres des sphères
+
+local function buildPyramid(height)
+	local points = {}
+	for k=1,height do
+		for i=1,k do
+			for j=1,k do
+				table.insert(points,{k-2*i+1, k-2*j+1, math.sqrt(2)*(height-k)})
+			end
+		end
+	end
+	return points
+end
+
+points = buildPyramid(5)
+
+local linalg = {}
+
+function linalg.normalize(t)
+	local n = math.sqrt(t[1]*t[1]+t[2]*t[2]+t[3]*t[3])
+	if n == 0 then return {0,0,0} end
+	return {t[1]/n, t[2]/n, t[3]/n}
+end
+
+function linalg.cross(u,v)
+	return {
+		u[2]*v[3]-u[3]*v[2],
+		u[3]*v[1]-u[1]*v[3],
+		u[1]*v[2]-u[2]*v[1]
+	}
+end
+
+function linalg.dot(u,v)
+	return u[1]*v[1]+u[2]*v[2]+u[3]*v[3]
+end
+
+
+local function sortedProjections(cameraPosition)
+	local projections = {}
+	local camera = { w = linalg.normalize(cameraPosition) }
+	camera.u = linalg.normalize(linalg.cross(camera.w, WORLD_DOWN))
+	camera.v = linalg.normalize(linalg.cross(camera.w,camera.u))
+
+	for _, point in ipairs(points) do
+		table.insert(projections ,  {
+			linalg.dot(camera.u,point),
+			linalg.dot(camera.v,point),
+			linalg.dot(camera.w,point)
+		})
+	end
+
+	table.sort(projections, function(a, b) return a[3] < b[3] end)
+
+	return projections
+end
+
+
+function printTikzPicture(cameraPosition)
+	local projections = sortedProjections(cameraPosition)
+
+	local lines = { "\\begin{tikzpicture}" }
+	for _, p in ipairs(projections) do
+		table.insert(lines,string.format(
+			"\\draw[fill=white] (%.3fcm,%.3fcm) circle (%.1fcm);",
+			p[1], p[2], RADIUS
+		))
+	end
+	table.insert(lines,"\\end{tikzpicture}")
+	tex.print(table.concat(lines,"\n"))
+end
+\end{luacode*}
+\newcommand\printPyramid[3]{\directlua{printTikzPicture({#1,#2,#3})}}
+
+
+\begin{document}
+\printPyramid{.6}{-1}{.2}~
+\printPyramid{.4}{-1}{.4}~
+\printPyramid{.2}{-1}{.6}~
+\printPyramid{0}{-1}{0.707}
+\end{document}
+
